@@ -44,11 +44,16 @@ while True:
             order = input("> ").strip().lower()
 
             choice = order   # Nueva variable
+            
+            if order=="exit"
+                 break
 
             print("Okay, how many " + order + "s would you like") 
             Number_Of_Orders = input("> ")
             
-            if order not in menu_items and order not in hidden_menu:
+
+
+            elif order not in menu_items and order not in hidden_menu:
                 print()
                 print('Please, enter a menu item or type "help"')
 
