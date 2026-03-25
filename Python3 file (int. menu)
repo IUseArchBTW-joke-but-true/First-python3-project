@@ -1,0 +1,81 @@
+# Cool af menu
+
+# Info inicial
+
+print()
+print("Hello, I'm Finn, what would you like to eat today?\n")
+print('      (Type "help" for a list of commands)') #así se ve más cool
+
+# Diccionario de precios
+
+prices = {
+    "black coffee": 1.0,
+    "cookie": 1.5,
+    "french toast": 2.0,
+    "apple": 0.75,
+    "pancake": 3.0   # hidden menu
+}
+
+# listas
+
+menu_items = ["black coffee", "cookie", "french toast", "apple"]
+hidden_menu = ["pancake"]
+commands = ["exit", "buy", "menu", "help"]
+
+# Mientras que true=true hacer esto (bucle)
+
+while True:
+    print()
+    choice = input("> ").strip().lower()      # choice = input("> ") imprimir "> " si lo que escoje el usuario (choice) = input (lo cual siempre va a ser vd) comprobar por orden posibles comandos
+                                              # .strip().lower() hace que aun que lo escribas mal (ej. en vez de "menu" "Menu ") siga funcionando como if "menu" y no "else:"
+    if choice=="menu":
+        print()
+        print("black coffee " + str(prices["black coffee"]) + " $" "\n")
+        print("cookie " + str(prices["cookie"]) + " $" "\n")
+        print("french toast " + str(prices["french toast"]) + " $" "\n")
+        print("apple " + str(prices["apple"]) + " $" "\n")
+
+    elif choice=="buy":
+          print()
+          print("What would you like to buy today ?")
+
+          while True:
+            print()
+            order = input("> ").strip().lower()
+
+            choice = order   # Nueva variable
+
+            print("Okay, how many " + order + "s would you like") 
+            Number_Of_Orders = input("> ")
+            
+            if order not in menu_items and order not in hidden_menu:
+                print()
+                print('Please, enter a menu item or type "help"')
+
+            elif int(Number_Of_Orders):
+                print("Okay, your " + str(Number_Of_Orders) + " " +  order + "s will be ready soon !!")
+                total = prices[order] * int(Number_Of_Orders)
+                print("Your total bill to pay is " + str(total)+ "$ enjoy your meal ;)" )
+
+            elif order == "exit":
+                break
+
+            elif order not in commands and order not in menu_items and order not in hidden_menu.strip().lower():
+                print()
+                print('Unknown command. Type "help" if you are lost.')
+
+    elif choice == "help":
+            print()
+            print('List of commands:' + "\n\n" + "help\n" + "buy\n" + "exit\n" + "menu")
+
+    elif choice == "exit":
+            print()
+            print("Goodbye!")
+            break
+    
+    elif order not in commands and order not in menu_items and order not in hidden_menu.strip().lower():
+        print()  # print() crea una linea, por lo que añadir \n añadiría 2
+        print('Unknown command. Type "help" if you are lost.')
+
+
+
