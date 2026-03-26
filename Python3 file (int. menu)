@@ -1,4 +1,5 @@
-# Cool af menu
+
+#  Cool af menu
 
 # Info inicial
 
@@ -45,10 +46,14 @@ while True:
 
             choice = order   # Nueva variable
 
+            if choice=="exit":
+                print("You'll exit the buy option, to fully exit the program type exit again")
+                break
+
             print("Okay, how many " + order + "s would you like") 
             Number_Of_Orders = input("> ")
             
-            if order not in menu_items and order not in hidden_menu:
+            if order not in menu_items and order not in hidden_menu not in commands:
                 print()
                 print('Please, enter a menu item or type "help"')
 
@@ -56,9 +61,6 @@ while True:
                 print("Okay, your " + str(Number_Of_Orders) + " " +  order + "s will be ready soon !!")
                 total = prices[order] * int(Number_Of_Orders)
                 print("Your total bill to pay is " + str(total)+ "$ enjoy your meal ;)" )
-
-            elif order == "exit":
-                break
 
             elif order not in commands and order not in menu_items and order not in hidden_menu.strip().lower():
                 print()
@@ -76,6 +78,7 @@ while True:
     elif order not in commands and order not in menu_items and order not in hidden_menu.strip().lower():
         print()  # print() crea una linea, por lo que añadir \n añadiría 2
         print('Unknown command. Type "help" if you are lost.')
+
 
 
 
