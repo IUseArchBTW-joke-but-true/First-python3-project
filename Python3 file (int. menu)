@@ -47,7 +47,7 @@ while True:
             choice = order   # Nueva variable
 
             if choice=="exit":
-                print("You'll exit the buy option, to fully exit the program type exit again")
+                print("You have exited the buy option, to fully exit the program type exit again")
                 break
 
             print("Okay, how many " + order + "s would you like") 
@@ -78,7 +78,4 @@ while True:
     elif order not in commands and order not in menu_items and order not in hidden_menu.strip().lower():
         print()  # print() crea una linea, por lo que añadir \n añadiría 2
         print('Unknown command. Type "help" if you are lost.')
-
-
-
 
