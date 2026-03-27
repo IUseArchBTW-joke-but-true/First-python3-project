@@ -1,81 +1,98 @@
 
-#  Cool af menu
 
-# Info inicial
+# Interactive menu (cool af)
 
-print()
-print("Hello, I'm Finn, what would you like to eat today?\n")
-print('      (Type "help" for a list of commands)') #así se ve más cool
+print("\nHello, I'm Finn, what would you like to eat today?\n")
+print('       (Type "help" for a list of commands)')
 
-# Diccionario de precios
-
+# Diccionario de precios (nombre : precio)
 prices = {
     "black coffee": 1.0,
     "cookie": 1.5,
     "french toast": 2.0,
     "apple": 0.75,
-    "pancake": 3.0   # hidden menu
+    "pancake": 3.0  # hidden menu
 }
 
-# listas
-
+# listas de items
 menu_items = ["black coffee", "cookie", "french toast", "apple"]
 hidden_menu = ["pancake"]
+
+# juntar todo (menu normal + oculto)
+all_items = menu_items + hidden_menu
+
+# comandos posibles
 commands = ["exit", "buy", "menu", "help"]
 
-# Mientras que true=true hacer esto (bucle)
 
-while True:
+# FUNCION menu (esto se ejecuta SOLO cuando la llamas)
+def show_menu():
     print()
-    choice = input("> ").strip().lower()      # choice = input("> ") imprimir "> " si lo que escoje el usuario (choice) = input (lo cual siempre va a ser vd) comprobar por orden posibles comandos
-                                              # .strip().lower() hace que aun que lo escribas mal (ej. en vez de "menu" "Menu ") siga funcionando como if "menu" y no "else:"
-    if choice=="menu":
-        print()
-        print("black coffee " + str(prices["black coffee"]) + " $" "\n")
-        print("cookie " + str(prices["cookie"]) + " $" "\n")
-        print("french toast " + str(prices["french toast"]) + " $" "\n")
-        print("apple " + str(prices["apple"]) + " $" "\n")
 
-    elif choice=="buy":
-          print()
-          print("What would you like to buy today ?")
+    # recorre cada item del menu normal
+    for item in menu_items:
+        # imprime nombre + precio
+        print(f"{item} {prices[item]} $")
 
-          while True:
-            print()
-            order = input("> ").strip().lower()
 
-            choice = order   # Nueva variable
+# FUNCION help
+def show_help():
+    print("\nCommands:\nhelp\nbuy\nmenu\nexit")
 
-            if choice=="exit":
-                print("You have exited the buy option, to fully exit the program type exit again")
-                break
 
-            print("Okay, how many " + order + "s would you like") 
-            Number_Of_Orders = input("> ")
-            
-            if order not in menu_items and order not in hidden_menu not in commands:
-                print()
-                print('Please, enter a menu item or type "help"')
+# FUNCION buy (todo lo de comprar está aquí dentro)
+def buy():
+    print("\nWhat would you like to buy today?")
 
-            elif int(Number_Of_Orders):
-                print("Okay, your " + str(Number_Of_Orders) + " " +  order + "s will be ready soon !!")
-                total = prices[order] * int(Number_Of_Orders)
-                print("Your total bill to pay is " + str(total)+ "$ enjoy your meal ;)" )
+    # bucle interno SOLO para comprar
+    while True:
+        order = input("> ").strip().lower()   # lo que escribe el usuario
 
-            elif order not in commands and order not in menu_items and order not in hidden_menu.strip().lower():
-                print()
-                print('Unknown command. Type "help" if you are lost.')
+        # salir del modo compra
+        if order == "exit":
+            print("Leaving buy menu...")
+            break
+
+        # si no es un item válido
+        if order not in all_items:
+            print('Unknown item. Type "menu" to see options.')
+            continue   # vuelve arriba del bucle
+
+        # preguntar cantidad
+        quantity = input("How many? > ")
+
+        # comprobar que es un número (evita errores)
+        if not quantity.isdigit():
+            print("Please enter a valid number.")
+            continue
+
+        quantity = int(quantity)   # convertir a numero
+
+        # calcular total
+        total = prices[order] * quantity
+
+        # mensaje final
+        print(f"Okay, your {quantity} {order}(s) will be ready soon!")
+        print(f"Total: {total}$")
+
+
+# bucle principal
+while True:
+    choice = input("\n> ").strip().lower()
+
+    if choice == "menu":
+        show_menu()   # llama a la funcion menu
 
     elif choice == "help":
-            print()
-            print('List of commands:' + "\n\n" + "help\n" + "buy\n" + "exit\n" + "menu")
+        show_help()   # llama a help
+
+    elif choice == "buy":
+        buy()   # entra en el modo compra
 
     elif choice == "exit":
-            print()
-            print("Goodbye!")
-            break
-    
-    elif order not in commands and order not in menu_items and order not in hidden_menu.strip().lower():
-        print()  # print() crea una linea, por lo que añadir \n añadiría 2
-        print('Unknown command. Type "help" if you are lost.')
+        print("\nGoodbye!")
+        break   # rompe el bucle y termina el programa
 
+    else:
+        # si escribe cualquier cosa rara
+        print('Unknown command. Type "help" if you are lost.')
