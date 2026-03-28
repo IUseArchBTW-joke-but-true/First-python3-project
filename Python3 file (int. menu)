@@ -87,7 +87,9 @@ def show_menu():
 # Funcion de --help
 def show_command_help(command):
     help_texts = {
+        "signup": "Use 'signup to create an account'",
         "signin": "Use 'signin' to log in. Example: 'signin'",
+        "help": "Bruh, are you serious ??",
         "buy": "Use 'buy' to purchase items. Example: 'buy cookie'",
         "menu": "Shows available menu items",
         "exit": "Exits the program",
@@ -126,8 +128,8 @@ users = load_users()  # Cargamos usuarios desde archivo al iniciar
 current_user = None   # Nadie está logueado inicialmente
 
 # Mensaje de bienvenida
-print("\nHello, I'm Finn, what would you like to eat today?\n")
-print('(Type "help" for a list of commands)')
+print("\n       Hello, I'm Finn, what would you like to eat today?\n")
+print('(Type "help" for a list of commands or type the command with "--help")')
 
 # Bucle principal del menú
 while True:
