@@ -1,5 +1,6 @@
 
 
+
 # Interactive menu (cool af)
 
 print("\nHello, I'm Finn, what would you like to eat today?\n")
@@ -24,75 +25,71 @@ all_items = menu_items + hidden_menu
 # comandos posibles
 commands = ["exit", "buy", "menu", "help"]
 
-
 # FUNCION menu (esto se ejecuta SOLO cuando la llamas)
 def show_menu():
     print()
-
-    # recorre cada item del menu normal
-    for item in menu_items:
-        # imprime nombre + precio
+    for item in menu_items:   # para cada item en el menu visible escribe :  el item + el precio
         print(f"{item} {prices[item]} $")
-
 
 # FUNCION help
 def show_help():
     print("\nCommands:\nhelp\nbuy\nmenu\nexit")
 
-
-# FUNCION buy (todo lo de comprar está aquí dentro)
+# FUNCION buy (solo para comprar)
 def buy():
-    print("\nWhat would you like to buy today?")
+    print("\nWhat would you like to buy today? (type 'exit' to leave)")
 
-    # bucle interno SOLO para comprar
     while True:
-        order = input("> ").strip().lower()   # lo que escribe el usuario
+        order = input("> ").strip().lower()
 
-        # salir del modo compra
         if order == "exit":
             print("Leaving buy menu...")
             break
 
-        # si no es un item válido
         if order not in all_items:
             print('Unknown item. Type "menu" to see options.')
-            continue   # vuelve arriba del bucle
+            continue
 
-        # preguntar cantidad
         quantity = input("How many? > ")
-
-        # comprobar que es un número (evita errores)
         if not quantity.isdigit():
             print("Please enter a valid number.")
             continue
 
-        quantity = int(quantity)   # convertir a numero
-
-        # calcular total
+        quantity = int(quantity)
         total = prices[order] * quantity
 
-        # mensaje final
-        print(f"Okay, your {quantity} {order}(s) will be ready soon!")
+        print(rf"Okay, your {quantity} {order}(s) will be ready soon!")
         print(f"Total: {total}$")
 
-
-# bucle principal
+# Bucle principal
 while True:
-    choice = input("\n> ").strip().lower()
+    raw = input("\n> ").strip().lower()
+    words = raw.split()
+
+    if not words:
+        continue
+
+    choice = words[0]
+    option = words[1] if len(words) > 1 else None
 
     if choice == "menu":
-        show_menu()   # llama a la funcion menu
+        if option == "--help":
+            print("Shows the menu")
+        else:
+            show_menu()
 
     elif choice == "help":
-        show_help()   # llama a help
+        show_help()
 
     elif choice == "buy":
-        buy()   # entra en el modo compra
+        if option == "--help":
+            print("Use this command to buy things")
+        else:
+            buy()
 
     elif choice == "exit":
         print("\nGoodbye!")
-        break   # rompe el bucle y termina el programa
+        break
 
     else:
-        # si escribe cualquier cosa rara
         print('Unknown command. Type "help" if you are lost.')
