@@ -1,95 +1,180 @@
+import hashlib  # Importamos la librería hashlib para hacer hash de contraseñas
 
+# -----------------------
+# CONFIGURACIÓN Y ARCHIVO
+# -----------------------
 
+USERS_FILE = "users.txt"  # Archivo donde se guardarán los usuarios y sus contraseñas
 
-# Interactive menu (cool af)
+# -----------------------
+# FUNCIONES DE USUARIOS
+# -----------------------
 
-print("\nHello, I'm Finn, what would you like to eat today?\n")
-print('       (Type "help" for a list of commands)')
+# Función para "hashear" la contraseña con SHA-256
+def hash_password(password):
+    # Convierte la contraseña en bytes y luego genera un hash hexadecimal
+    return hashlib.sha256(password.encode()).hexdigest()
 
-# Diccionario de precios (nombre : precio)
+# Cargar usuarios desde el archivo
+def load_users(filename=USERS_FILE):
+    users = {}  # Diccionario vacío donde guardaremos los usuarios
+    try:
+        with open(filename, "r") as f:  # Abrimos el archivo en modo lectura
+            for line in f:  # Iteramos línea por línea
+                if ":" in line:  # Comprobamos que tenga el formato correcto username:hash
+                    username, password = line.strip().split(":", 1)  # Separamos por ':'
+                    users[username] = password  # Guardamos en el diccionario
+    except FileNotFoundError:
+        pass  # Si no existe el archivo, seguimos con diccionario vacío
+    return users  # Devolvemos el diccionario con usuarios cargados
+
+# Guardar usuarios en el archivo
+def save_users(users, filename=USERS_FILE):
+    with open(filename, "w") as f:  # Abrimos en modo escritura (sobrescribe el archivo)
+        for username, password in users.items():  # Iteramos el diccionario
+            f.write(f"{username}:{password}\n")  # Guardamos cada usuario en una línea
+
+# Función de registro (Sign Up)
+def sign_up():
+    print("\n--- Sign Up ---")
+    username = input("Choose a username: ").strip()  # Pedimos el nombre de usuario
+    if username in users:  # Comprobamos si ya existe
+        print("Username already taken. Try another.")
+        return False  # Salimos de la función si existe
+    password = input("Choose a password: ").strip()  # Pedimos la contraseña
+    users[username] = hash_password(password)  # Guardamos la contraseña hasheada
+    save_users(users)  # Guardamos los usuarios en el archivo
+    print("Account created successfully!")  # Mensaje de confirmación
+    return True  # Registro exitoso
+
+# Función de inicio de sesión (Sign In)
+def sign_in():
+    print("\n--- Sign In ---")
+    username = input("Username: ").strip()  # Pedimos el nombre de usuario
+    password = input("Password: ").strip()  # Pedimos la contraseña
+    hashed = hash_password(password)  # Calculamos el hash
+    if username in users and users[username] == hashed:  # Verificamos usuario y hash
+        print(f"Welcome back, {username}!")  # Mensaje de bienvenida
+        return username  # Retornamos el nombre de usuario para sesión activa
+    else:
+        print("Incorrect username or password.")  # Mensaje de error
+        return None  # Fallo en inicio de sesión
+
+# -----------------------
+# MENÚ Y COMPRA
+# -----------------------
+
+# Diccionario de precios de los items
 prices = {
     "black coffee": 1.0,
     "cookie": 1.5,
     "french toast": 2.0,
     "apple": 0.75,
-    "pancake": 3.0  # hidden menu
+    "pancake": 3.0  # Hidden menu
 }
 
-# listas de items
+# Listas de items visibles y ocultos
 menu_items = ["black coffee", "cookie", "french toast", "apple"]
 hidden_menu = ["pancake"]
+all_items = menu_items + hidden_menu  # Todos los items disponibles
 
-# juntar todo (menu normal + oculto)
-all_items = menu_items + hidden_menu
-
-# comandos posibles
-commands = ["exit", "buy", "menu", "help"]
-
-# FUNCION menu (esto se ejecuta SOLO cuando la llamas)
+# Función para mostrar el menú visible
 def show_menu():
-    print()
-    for item in menu_items:   # para cada item en el menu visible escribe :  el item + el precio
-        print(f"{item} {prices[item]} $")
+    print()  # Salto de línea
+    for item in menu_items:  # Iteramos cada item visible
+        print(f"{item} {prices[item]} $")  # Mostramos item y precio
 
-# FUNCION help
+# Función para mostrar comandos de ayuda
 def show_help():
-    print("\nCommands:\nhelp\nbuy\nmenu\nexit")
+    print("\nCommands:\nsignup\nsignin\nhelp\nbuy\nmenu\nexit")  # Lista de comandos
 
-# FUNCION buy (solo para comprar)
+# Función para comprar items
 def buy():
-    print("\nWhat would you like to buy today? (type 'exit' to leave)")
-
-    while True:
-        order = input("> ").strip().lower()
-
-        if order == "exit":
+    print("\nWhat would you like to buy today? (type 'exit' to leave)")  # Instrucciones
+    while True:  # Bucle infinito hasta que el usuario escriba "exit"
+        order = input("> ").strip().lower()  # Pedimos el item, limpiamos espacios y ponemos en minúsculas
+        if order == "exit":  # Salir del bucle
             print("Leaving buy menu...")
-            break
-
-        if order not in all_items:
+            break  # Rompe el bucle
+        if order not in all_items:  # Si el item no existe
             print('Unknown item. Type "menu" to see options.')
-            continue
-
-        quantity = input("How many? > ")
-        if not quantity.isdigit():
+            continue  # Vuelve al inicio del bucle
+        quantity = input("How many? > ")  # Preguntamos la cantidad
+        if not quantity.isdigit():  # Comprobamos que sea número
             print("Please enter a valid number.")
-            continue
+            continue  # Vuelve al inicio del bucle
+        quantity = int(quantity)  # Convertimos a entero
+        total = prices[order] * quantity  # Calculamos total
+        print(f"Okay, your {quantity} {order}(s) will be ready soon!")  # Mensaje de confirmación
+        print(f"Total: {total}$")  # Mostramos el total
 
-        quantity = int(quantity)
-        total = prices[order] * quantity
+# -----------------------
+# INICIO DEL PROGRAMA
+# -----------------------
 
-        print(rf"Okay, your {quantity} {order}(s) will be ready soon!")
-        print(f"Total: {total}$")
+users = load_users()  # Cargamos usuarios desde archivo al iniciar
+current_user = None   # Nadie está logueado inicialmente
 
-# Bucle principal
+# Mensaje de bienvenida
+print("\nHello, I'm Finn, what would you like to eat today?\n")
+print('(Type "help" for a list of commands)')
+
+# Bucle principal del menú
 while True:
-    raw = input("\n> ").strip().lower()
-    words = raw.split()
+    raw = input("\n> ").strip().lower()  # Input del usuario, limpio y en minúsculas
+    words = raw.split()  # Separamos en palabras para comando y opción
+    if not words:  # Si no escribió nada
+        continue  # Volvemos a pedir input
 
-    if not words:
-        continue
+    choice = words[0]  # Comando principal (ej. buy, menu, help)
+    option = words[1] if len(words) > 1 else None  # Opción secundaria (ej. --help)
 
-    choice = words[0]
-    option = words[1] if len(words) > 1 else None
-
-    if choice == "menu":
+    # -----------------------
+    # BLOQUE DE COMANDOS
+    # -----------------------
+    if choice == "signup":  # Comando signup
+        sign_up()
+    elif choice == "signin":  # Comando signin
         if option == "--help":
-            print("Shows the menu")
+            print("\nUse 'buy' to purchase items from the menu.")
+            print("Example: 'buy cookie' then enter quantity when prompted.")
+            print("Type 'exit' to leave the buy menu.\n")
+        else:
+            user = sign_in()
+            if user:  # Si inicio sesión correctamente
+                current_user = user
+    elif choice == "buy":  # Comando buy
+        if current_user is None:
+            print("You need to sign in first! Use 'signup' or 'signin'.")
+            continue
+        if option == "--help":
+            print("\nUse 'buy' to purchase items from the menu.")
+            print("Example: 'buy cookie' then enter quantity when prompted.")
+            print("Type 'exit' to leave the buy menu.\n")
+        else:
+            buy()  # Llamamos a la función de compra
+    elif choice == "menu":  # Mostrar menú
+        if option == "--help":
+            print("\nUse 'buy' to purchase items from the menu.")
+            print("Example: 'buy cookie' then enter quantity when prompted.")
+            print("Type 'exit' to leave the buy menu.\n")
         else:
             show_menu()
-
-    elif choice == "help":
-        show_help()
-
-    elif choice == "buy":
+    elif choice == "help":  # Mostrar ayuda
         if option == "--help":
-            print("Use this command to buy things")
+            print("\nUse 'buy' to purchase items from the menu.")
+            print("Example: 'buy cookie' then enter quantity when prompted.")
+            print("Type 'exit' to leave the buy menu.\n")
         else:
-            buy()
-
-    elif choice == "exit":
-        print("\nGoodbye!")
-        break
-
-    else:
+            show_help()
+    elif choice == "exit":  # Salir del programa
+        if option == "--help":
+            print("\nUse 'exit' to exit the program.")
+            print("Example: 'buy cookie' then enter quantity when prompted.")
+            print("Type 'exit' to leave the buy menu.\n")
+        else:
+            buy()  # Llamamos a la función
+            print("\nGoodbye!")
+            break  # Rompe el bucle principal
+    else:  # Comando desconocido
         print('Unknown command. Type "help" if you are lost.')
