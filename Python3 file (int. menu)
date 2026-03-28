@@ -84,6 +84,16 @@ def show_menu():
     for item in menu_items:  # Iteramos cada item visible
         print(f"{item} {prices[item]} $")  # Mostramos item y precio
 
+# Funcion de --help
+def show_command_help(command):
+    help_texts = {
+        "signin": "Use 'signin' to log in. Example: 'signin'",
+        "buy": "Use 'buy' to purchase items. Example: 'buy cookie'",
+        "menu": "Shows available menu items",
+        "exit": "Exits the program",
+    }
+    print(help_texts.get(command, "No help available for this command."))
+
 # Función para mostrar comandos de ayuda
 def show_help():
     print("\nCommands:\nsignup\nsignin\nhelp\nbuy\nmenu\nexit")  # Lista de comandos
@@ -133,12 +143,15 @@ while True:
     # BLOQUE DE COMANDOS
     # -----------------------
     if choice == "signup":  # Comando signup
-        sign_up()
+        if option == "--help":
+            print()
+            show_command_help(choice)
+        else:
+            sign_up()
     elif choice == "signin":  # Comando signin
         if option == "--help":
-            print("\nUse 'buy' to purchase items from the menu.")
-            print("Example: 'buy cookie' then enter quantity when prompted.")
-            print("Type 'exit' to leave the buy menu.\n")
+            print()
+            show_command_help(choice)
         else:
             user = sign_in()
             if user:  # Si inicio sesión correctamente
@@ -148,30 +161,26 @@ while True:
             print("You need to sign in first! Use 'signup' or 'signin'.")
             continue
         if option == "--help":
-            print("\nUse 'buy' to purchase items from the menu.")
-            print("Example: 'buy cookie' then enter quantity when prompted.")
-            print("Type 'exit' to leave the buy menu.\n")
+            print()
+            show_command_help(choice)
         else:
             buy()  # Llamamos a la función de compra
     elif choice == "menu":  # Mostrar menú
         if option == "--help":
-            print("\nUse 'buy' to purchase items from the menu.")
-            print("Example: 'buy cookie' then enter quantity when prompted.")
-            print("Type 'exit' to leave the buy menu.\n")
+            print()
+            show_command_help(choice)
         else:
             show_menu()
     elif choice == "help":  # Mostrar ayuda
         if option == "--help":
-            print("\nUse 'buy' to purchase items from the menu.")
-            print("Example: 'buy cookie' then enter quantity when prompted.")
-            print("Type 'exit' to leave the buy menu.\n")
+            print()
+            show_command_help(choice)
         else:
             show_help()
     elif choice == "exit":  # Salir del programa
         if option == "--help":
-            print("\nUse 'exit' to exit the program.")
-            print("Example: 'buy cookie' then enter quantity when prompted.")
-            print("Type 'exit' to leave the buy menu.\n")
+            print()
+            show_command_help(choice)
         else:
             buy()  # Llamamos a la función
             print("\nGoodbye!")
